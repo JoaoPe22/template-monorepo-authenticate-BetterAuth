@@ -1,0 +1,94 @@
+'use client'
+
+import { ChevronDown, Loader2, LogOut } from 'lucide-react'
+import { useTheme } from 'next-themes'
+import Link from 'next/link'
+
+import { authClient } from '@/auth/client'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { SidebarTrigger } from '@/components/ui/sidebar'
+import { useSignOut } from '@/hooks/use-sign-out'
+
+
+const Topbar = () => {
+  const { data: session } = authClient.useSession()
+  const { theme, setTheme } = useTheme()
+  const { signOut, isSigningOut } = useSignOut()
+
+  const user = session?.user
+
+  return (
+    <header className="flex items-center justify-between gap-1 p-2">
+      <SidebarTrigger />
+
+      <div className="flex items-center gap-1">
+        <DropdownMenu>
+          <DropdownMenuTrigger className="hover:bg-accent flex items-center gap-2 rounded-md p-1.5 outline-none">
+            <span className="text-sm font-medium">{user?.name}</span>
+            <ChevronDown className="size-4 opacity-50" />
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent align="end" className="w-64">
+            <DropdownMenuItem asChild>
+              <Link href="/perfil" className="flex items-center gap-2">
+                <div className="flex flex-col">
+                  <span className="text-sm font-medium">{user?.name}</span>
+                  <span className="text-muted-foreground text-xs">
+                    {user?.email}
+                  </span>
+                </div>
+              </Link>
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
+
+            <div className="px-2 py-1.5">
+              <span className="text-muted-foreground mb-1.5 block text-xs">
+                Tema
+              </span>
+              <Select value={theme} onValueChange={setTheme}>
+                <SelectTrigger size="sm" className="w-full">
+                  <SelectValue placeholder="Selecione o tema" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="light">Claro</SelectItem>
+                  <SelectItem value="dark">Escuro</SelectItem>
+                  <SelectItem value="system">Sistema</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <DropdownMenuSeparator />
+
+            <DropdownMenuItem
+              variant="destructive"
+              disabled={isSigningOut}
+              onSelect={(event) => {
+                event.preventDefault()
+                signOut()
+              }}
+            >
+              {isSigningOut ? <Loader2 className="animate-spin" /> : <LogOut />}
+              Sair
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    </header>
+  )
+}
+
+export { Topbar }
