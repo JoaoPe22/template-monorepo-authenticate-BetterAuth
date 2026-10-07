@@ -1,8 +1,6 @@
 'use client'
 
-import {
-  House,
-} from 'lucide-react'
+import { House } from 'lucide-react'
 import { useEffect } from 'react'
 
 import {

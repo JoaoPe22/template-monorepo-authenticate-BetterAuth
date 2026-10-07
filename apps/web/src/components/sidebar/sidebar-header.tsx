@@ -7,7 +7,13 @@ const AppSidebarHeader = () => {
   return (
     <SidebarHeader>
       <Link href="/">
-        <Image src="/logo.png" alt="Template Monorepo Authenticate" priority width={250} height={50} />
+        <Image
+          src="/logo.png"
+          alt="Template Monorepo Authenticate"
+          priority
+          width={250}
+          height={50}
+        />
       </Link>
     </SidebarHeader>
   )
