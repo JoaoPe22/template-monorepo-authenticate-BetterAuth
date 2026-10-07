@@ -1,7 +1,10 @@
 {
   "name": "@templateMonorepo/api",
   "version": "1.0.0",
-  "description": "",
+  "private": true,
+  "exports": {
+    "./schema": "./src/database/schema/index.ts"
+  },
   "scripts": {
     "build": "tsc --noEmit && tsup",
     "dev": "tsx watch --env-file=.env src/http/server.ts",
@@ -18,36 +21,28 @@
   "license": "ISC",
   "devDependencies": {
     "@eslint/js": "9.39.4",
-    "@fastify/autoload": "6.5.0",
-    "@types/node": "26.1.1",
-    "drizzle-kit": "0.31.10",
+    "@types/node": "24.19.1",
+    "drizzle-kit": "0.31.11",
     "eslint": "9.39.4",
     "eslint-plugin-import": "2.31.0",
-    "eslint-plugin-simple-import-sort": "12.0.0",
-    "fastify-type-provider-zod": "6.1.0",
-    "globals": "15.0.0",
-    "neostandard": "0.12.0",
-    "prettier": "3.9.6",
+    "eslint-plugin-simple-import-sort": "12.1.1",
+    "globals": "17.4.0",
+    "neostandard": "0.13.0",
+    "prettier": "3.9.9",
     "tsup": "8.5.1",
     "tsx": "4.23.1",
-    "typescript": "7.0.2",
+    "typescript": "6.0.3",
     "typescript-eslint": "8.65.0"
   },
   "dependencies": {
     "@fastify/cors": "11.3.0",
-    "@fastify/helmet": "13.1.0",
-    "@fastify/multipart": "10.1.0",
+    "@fastify/helmet": "13.1.1",
     "@fastify/rate-limit": "11.2.0",
-    "@fastify/sse": "0.6.0",
-    "better-auth": "1.7.2",
-    "drizzle-orm": "0.45.2",
-    "drizzle-zod": "0.8.3",
-    "fastify": "5.12.1",
-    "fastify-better-auth": "1.2.0",
-    "fastify-plugin": "6.0.0",
-    "nodemailer": "9.0.3",
+    "better-auth": "1.7.7",
+    "drizzle-orm": "0.45.3",
+    "fastify": "5.12.5",
+    "fastify-type-provider-zod": "6.1.0",
     "postgres": "3.4.9",
-    "uuid": "14.0.2",
     "zod": "4.5.4"
   }
 }

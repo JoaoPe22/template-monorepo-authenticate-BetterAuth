@@ -1,10 +1,6 @@
 {
   "name": "templateMonorepo",
   "version": "1.0.0",
-  "description": "",
-  "author": "",
-  "workspaces": [
-    "apps/*"
-  ],
+  "private": true,
   "packageManager": "pnpm@11.22.0"
 }
