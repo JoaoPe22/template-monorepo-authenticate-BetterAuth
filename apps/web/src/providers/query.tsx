@@ -1,4 +1,4 @@
-// Configura o React Query (usado pelos hooks em src/hooks, ex.: useUsuarios).
+// Configura o React Query para os hooks de dados da aplicação.
 // O retry só acontece para erros "temporários" (ver shouldRetry em
 // src/lib/error-handler.ts) e para de tentar depois de poucas tentativas.
 'use client'

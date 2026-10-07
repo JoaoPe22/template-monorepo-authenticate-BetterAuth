@@ -1,6 +1,5 @@
-// Layout raiz do Next.js — envolve toda página com o QueryProvider (necessário para
-// os hooks de React Query, ex.: useUsuarios) e o Toaster (toasts de sucesso/erro
-// usados nas telas de login, cadastro e conta).
+// Layout raiz do Next.js — envolve toda página com React Query, tema, barra de
+// progresso e o Toaster (toasts de sucesso/erro das telas de autenticação).
 import './globals.css'
 
 import { Outfit } from 'next/font/google'
