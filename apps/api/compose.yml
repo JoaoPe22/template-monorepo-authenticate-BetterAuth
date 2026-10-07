@@ -1,11 +1,11 @@
+name: templateMonorepo
+
 services:
   pg:
-    container_name: templateMonorepo
+    container_name: templateMonorepo-pg
     image: postgres:17
     ports:
-      - '${DOCKER_PG_PORT}:5432'
-    env_file:
-      - .env
+      - '127.0.0.1:${DOCKER_PG_PORT}:5432'
     environment:
       - POSTGRES_USER=${DOCKER_PG_USER}
       - POSTGRES_PASSWORD=${DOCKER_PG_PASSWORD}

@@ -9,13 +9,6 @@ const envSchema = z.object({
   BETTER_AUTH_SECRET: z.string().nonempty(),
   BETTER_AUTH_URL: z.url(),
   FRONTEND_URL: z.url().default('http://localhost:3000'),
-  SMTP_HOST: z.string(),
-  SMTP_PORT: z.coerce.number().default(587),
-  SMTP_USER: z.string().nonempty(),
-  SMTP_PASS: z.string().nonempty(),
-  SMTP_FROM_NAME: z.string(),
-  SMTP_FROM_EMAIL: z.email(),
-  APPLICATION_TIMEZONE: z.string().default('America/Cuiaba'),
 })
 
 const env = envSchema.parse(process.env)
