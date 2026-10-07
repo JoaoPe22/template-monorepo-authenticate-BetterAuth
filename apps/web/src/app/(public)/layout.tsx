@@ -4,7 +4,7 @@ const PublicLayout = ({
   children,
 }: Readonly<{ children: React.ReactNode }>) => {
   return (
-    <main className="flex min-h-[calc(100vh-1rem)] items-center justify-center">
+    <main className="flex min-h-svh items-center justify-center p-4">
       {children}
     </main>
   )

@@ -1,27 +1,26 @@
 'use client'
 
-import { ChevronDown, Loader2, LogOut } from 'lucide-react'
+import { ChevronDown, LogOut, Palette } from 'lucide-react'
 import { useTheme } from 'next-themes'
-import Link from 'next/link'
 
 import { authClient } from '@/auth/client'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import { SidebarTrigger } from '@/components/ui/sidebar'
+import { Spinner } from '@/components/ui/spinner'
 import { useSignOut } from '@/hooks/use-sign-out'
-
 
 const Topbar = () => {
   const { data: session } = authClient.useSession()
@@ -34,59 +33,59 @@ const Topbar = () => {
     <header className="flex items-center justify-between gap-1 p-2">
       <SidebarTrigger />
 
-      <div className="flex items-center gap-1">
-        <DropdownMenu>
-          <DropdownMenuTrigger className="hover:bg-accent flex items-center gap-2 rounded-md p-1.5 outline-none">
-            <span className="text-sm font-medium">{user?.name}</span>
-            <ChevronDown className="size-4 opacity-50" />
-          </DropdownMenuTrigger>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost">
+            {user?.name}
+            <ChevronDown className="opacity-50" />
+          </Button>
+        </DropdownMenuTrigger>
 
-          <DropdownMenuContent align="end" className="w-64">
-            <DropdownMenuItem asChild>
-              <Link href="/perfil" className="flex items-center gap-2">
-                <div className="flex flex-col">
-                  <span className="text-sm font-medium">{user?.name}</span>
-                  <span className="text-muted-foreground text-xs">
-                    {user?.email}
-                  </span>
-                </div>
-              </Link>
-            </DropdownMenuItem>
+        <DropdownMenuContent align="end" className="w-64">
+          <DropdownMenuLabel className="flex flex-col">
+            <span>{user?.name}</span>
+            <span className="text-muted-foreground text-xs font-normal">
+              {user?.email}
+            </span>
+          </DropdownMenuLabel>
 
-            <DropdownMenuSeparator />
+          <DropdownMenuSeparator />
 
-            <div className="px-2 py-1.5">
-              <span className="text-muted-foreground mb-1.5 block text-xs">
-                Tema
-              </span>
-              <Select value={theme} onValueChange={setTheme}>
-                <SelectTrigger size="sm" className="w-full">
-                  <SelectValue placeholder="Selecione o tema" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="light">Claro</SelectItem>
-                  <SelectItem value="dark">Escuro</SelectItem>
-                  <SelectItem value="system">Sistema</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger>
+              <Palette />
+              Tema
+            </DropdownMenuSubTrigger>
+            <DropdownMenuSubContent>
+              <DropdownMenuRadioGroup value={theme} onValueChange={setTheme}>
+                <DropdownMenuRadioItem value="light">
+                  Claro
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="dark">
+                  Escuro
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="system">
+                  Sistema
+                </DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+            </DropdownMenuSubContent>
+          </DropdownMenuSub>
 
-            <DropdownMenuSeparator />
+          <DropdownMenuSeparator />
 
-            <DropdownMenuItem
-              variant="destructive"
-              disabled={isSigningOut}
-              onSelect={(event) => {
-                event.preventDefault()
-                signOut()
-              }}
-            >
-              {isSigningOut ? <Loader2 className="animate-spin" /> : <LogOut />}
-              Sair
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+          <DropdownMenuItem
+            variant="destructive"
+            disabled={isSigningOut}
+            onSelect={(event) => {
+              event.preventDefault()
+              signOut()
+            }}
+          >
+            {isSigningOut ? <Spinner /> : <LogOut />}
+            Sair
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </header>
   )
 }

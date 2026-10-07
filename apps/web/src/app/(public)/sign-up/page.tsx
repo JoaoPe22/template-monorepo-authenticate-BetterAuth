@@ -1,8 +1,6 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useQueryClient } from '@tanstack/react-query'
-import { Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
@@ -12,13 +10,27 @@ import { z } from 'zod'
 import { authClient } from '@/auth/client'
 import { GoogleIcon } from '@/components/icons/google-icon'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Field, FieldGroup, FieldLabel, FieldSeparator, FieldSet } from '@/components/ui/field'
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+  FieldSeparator,
+} from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
+import { PasswordInput } from '@/components/ui/password-input'
+import { Spinner } from '@/components/ui/spinner'
 
 const signUpSchema = z
   .object({
-    name: z.string().min(1, 'O nome é obrigatório'),
+    name: z.string().trim().min(1, 'O nome é obrigatório'),
     email: z
       .email('Formato de e-mail inválido')
       .min(1, 'O e-mail é obrigatório'),
@@ -34,9 +46,7 @@ type SignUpFormData = z.infer<typeof signUpSchema>
 
 const Page = () => {
   const router = useRouter()
-  const queryClient = useQueryClient()
   const {
-    control,
     handleSubmit,
     formState: { errors, isSubmitting },
     register,
@@ -59,20 +69,16 @@ const Page = () => {
       })
 
       if (response.error) {
-        console.error('Erro ao criar conta:', response.error)
         toast.error(
           response.error.message || 'Erro ao criar conta. Tente novamente.',
         )
         return
       }
 
-      queryClient.clear()
-
       toast.success(
         'Conta criada! Enviamos um link de confirmação para o seu e-mail.',
       )
       router.push('/sign-in')
-      router.refresh()
     } catch (error) {
       console.error('Erro ao criar conta:', error)
       toast.error('Erro ao criar conta. Tente novamente.')
@@ -89,106 +95,95 @@ const Page = () => {
   }
 
   return (
-      <section className="flex items-center justify-cente p-10">
-        <Card className="w-80 max-w-md rounded-xl shadow-xl">
-          <CardHeader className="space-y-6 text-center">
-            {/* LOGO */}
-          </CardHeader>
+    <Card className="w-full max-w-sm shadow-xl">
+      <CardHeader className="text-center">
+        <CardTitle className="text-3xl">Criar conta</CardTitle>
+      </CardHeader>
 
-          <CardTitle className="text-center text-3xl">Criar conta</CardTitle>
+      <CardContent>
+        <form onSubmit={handleSubmit(handleSignUp)} method="post">
+          <FieldGroup>
+            <Field data-invalid={!!errors.name}>
+              <FieldLabel htmlFor="name">Nome</FieldLabel>
+              <Input
+                id="name"
+                autoComplete="name"
+                aria-invalid={!!errors.name}
+                {...register('name')}
+                disabled={isSubmitting}
+              />
+              <FieldError errors={[errors.name]} />
+            </Field>
 
-          <CardContent>
-            <form onSubmit={handleSubmit(handleSignUp)} method="post">
-              <FieldSet>
-                <FieldGroup>
-                  <Field>
-                    <FieldLabel htmlFor="name">Nome</FieldLabel>
-                    <Input
-                      id="name"
-                      {...register('name')}
-                      disabled={isSubmitting}
-                    />
-                    {errors.name && <span>{errors.name.message}</span>}
-                  </Field>
+            <Field data-invalid={!!errors.email}>
+              <FieldLabel htmlFor="email">Email</FieldLabel>
+              <Input
+                id="email"
+                type="email"
+                autoComplete="email"
+                aria-invalid={!!errors.email}
+                {...register('email')}
+                disabled={isSubmitting}
+              />
+              <FieldError errors={[errors.email]} />
+            </Field>
 
-                  <Field>
-                    <FieldLabel htmlFor="email">Email</FieldLabel>
-                    <Input
-                      id="email"
-                      type="email"
-                      {...register('email')}
-                      disabled={isSubmitting}
-                    />
-                    {errors.email && <span>{errors.email.message}</span>}
-                  </Field>
+            <Field data-invalid={!!errors.password}>
+              <FieldLabel htmlFor="password">Senha</FieldLabel>
+              <PasswordInput
+                id="password"
+                autoComplete="new-password"
+                aria-invalid={!!errors.password}
+                {...register('password')}
+                disabled={isSubmitting}
+              />
+              <FieldError errors={[errors.password]} />
+            </Field>
 
-                  <Field>
-                    <FieldLabel htmlFor="password">Senha</FieldLabel>
-                    <Input
-                      id="password"
-                      type="password"
-                      {...register('password')}
-                      disabled={isSubmitting}
-                    />
-                    {errors.password && <span>{errors.password.message}</span>}
-                  </Field>
+            <Field data-invalid={!!errors.confirmPassword}>
+              <FieldLabel htmlFor="confirmPassword">Confirmar senha</FieldLabel>
+              <PasswordInput
+                id="confirmPassword"
+                autoComplete="new-password"
+                aria-invalid={!!errors.confirmPassword}
+                {...register('confirmPassword')}
+                disabled={isSubmitting}
+              />
+              <FieldError errors={[errors.confirmPassword]} />
+            </Field>
 
-                  <Field>
-                    <FieldLabel htmlFor="confirmPassword">
-                      Confirmar senha
-                    </FieldLabel>
-                    <Input
-                      id="confirmPassword"
-                      type="password"
-                      {...register('confirmPassword')}
-                      disabled={isSubmitting}
-                    />
-                    {errors.confirmPassword && (
-                      <span>{errors.confirmPassword.message}</span>
-                    )}
-                  </Field>
-                </FieldGroup>
-              </FieldSet>
+            <Field>
+              <Button type="submit" variant="secondary" disabled={isSubmitting}>
+                {isSubmitting && <Spinner />}
+                Criar conta
+              </Button>
+            </Field>
 
-              <div className="space-y-5 pt-3">
-                <Button
-                  className="w-full"
-                  type="submit"
-                  variant="secondary"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting && <Loader2 className="animate-spin" />}
-                  Criar conta
-                </Button>
-              </div>
+            <FieldSeparator>ou</FieldSeparator>
 
-              <FieldSeparator>ou</FieldSeparator>
+            <Field>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleGoogleSignIn}
+                disabled={isSubmitting}
+              >
+                <GoogleIcon />
+                Continuar com Google
+              </Button>
+            </Field>
+          </FieldGroup>
+        </form>
+      </CardContent>
 
-              <div className="pt-3">
-                <Button
-                  className="w-full"
-                  type="button"
-                  variant="outline"
-                  onClick={handleGoogleSignIn}
-                  disabled={isSubmitting}
-                >
-                  <GoogleIcon className="size-4" />
-                  Continuar com Google
-                </Button>
-              </div>
-              <div className="flex justify-center space-x-9 pt-3">
-                <Link
-                  href="/sign-in"
-                  className="text-muted-foreground block text-center text-sm hover:underline"
-                  prefetch={false}
-                >
-                  Já tenho uma conta
-                </Link>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
-      </section>
+      <CardFooter className="justify-center">
+        <Button variant="ghost" size="sm" asChild>
+          <Link href="/sign-in" prefetch={false}>
+            Já tenho uma conta
+          </Link>
+        </Button>
+      </CardFooter>
+    </Card>
   )
 }
 
