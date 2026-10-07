@@ -1,5 +1,15 @@
-// Templates HTML/texto dos emails de redefinição de senha, usados por src/auth/index.ts
+// Templates HTML/texto dos emails de autenticação, usados por src/auth/index.ts
+import { env as publicEnv } from './env'
 import { envServer as env } from './env-server'
+
+// O nome vem do formulário de cadastro: sem escapar, vira injeção de HTML no e-mail
+const escapeHtml = (value: string) =>
+  value
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;')
 
 type ResetPasswordTemplateData = {
   userName: string
@@ -71,7 +81,7 @@ const resetPasswordTemplate = (data: ResetPasswordTemplateData) => {
       <img src="${env.BETTER_AUTH_URL}/logotipo.png" alt="Template Monorepo Authenticate" />
     </div>
     <h1>Redefinição de Senha</h1>
-    <p>Olá ${data.userName},</p>
+    <p>Olá ${escapeHtml(data.userName)},</p>
     <p>Recebemos uma solicitação para redefinir a senha da sua conta. Clique no botão abaixo para criar uma nova senha:</p>
     <div style="text-align: center;">
       <a href="${data.resetUrl}" class="button">Redefinir Senha</a>
@@ -175,7 +185,7 @@ const verifyEmailTemplate = (data: VerifyEmailTemplateData) => {
       <img src="${env.BETTER_AUTH_URL}/logotipo.png" alt="Template Monorepo Authenticate" />
     </div>
     <h1>Confirme seu e-mail</h1>
-    <p>Olá ${data.userName},</p>
+    <p>Olá ${escapeHtml(data.userName)},</p>
     <p>Falta só um passo para começar a usar sua conta: confirme que este é o seu e-mail clicando no botão abaixo.</p>
     <div style="text-align: center;">
       <a href="${data.verificationUrl}" class="button">Confirmar e-mail</a>
@@ -210,11 +220,25 @@ Este é um email automático, por favor não responda.
   `
 }
 
+type PasswordChangedTemplateData = { userName: string }
+
+const changedAt = () =>
+  new Date().toLocaleString('pt-BR', {
+    timeZone: publicEnv.NEXT_PUBLIC_APPLICATION_TIMEZONE,
+  })
+
+const passwordChangedTemplate = (data: PasswordChangedTemplateData) =>
+  `<p>Olá ${escapeHtml(data.userName)},</p><p>Sua senha foi alterada com sucesso em ${changedAt()}.</p><p>Se você não realizou esta alteração, entre em contato conosco imediatamente.</p>`
+
+const passwordChangedTextTemplate = (data: PasswordChangedTemplateData) =>
+  `Olá ${data.userName},\n\nSua senha foi alterada com sucesso em ${changedAt()}.\nSe você não realizou esta alteração, entre em contato conosco imediatamente.`
+
 export {
+  passwordChangedTemplate,
+  passwordChangedTextTemplate,
   resetPasswordTemplate,
   resetPasswordTextTemplate,
   verifyEmailTemplate,
-  verifyEmailTextTemplate
+  verifyEmailTextTemplate,
 }
 export type { ResetPasswordTemplateData, VerifyEmailTemplateData }
-
