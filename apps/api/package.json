@@ -42,7 +42,7 @@
     "better-auth": "1.7.2",
     "drizzle-orm": "0.45.2",
     "drizzle-zod": "0.8.3",
-    "fastify": "5.12.1",
+    "fastify": "5.12.5",
     "fastify-better-auth": "1.2.0",
     "fastify-plugin": "6.0.0",
     "nodemailer": "9.0.3",
